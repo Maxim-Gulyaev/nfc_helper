@@ -17,9 +17,11 @@ import androidx.compose.ui.res.stringResource
 import com.maxim.nfchelper.R
 
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(
+    navigateBack: () -> Unit,
+) {
     Scaffold(
-        topBar = { SettingsScreenAppBar() },
+        topBar = { SettingsScreenAppBar(navigateBack) },
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -31,6 +33,7 @@ fun SettingsScreen() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SettingsScreenAppBar(
+    onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     TopAppBar(
@@ -41,11 +44,13 @@ private fun SettingsScreenAppBar(
         title = {
             Text(stringResource(R.string.title_settings_screen))
         },
-        actions = {
-            IconButton(onClick = { /* do something */ }) {
+        navigationIcon = {
+            IconButton(
+                onClick = { onBackClick() }
+            ) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_settings_main_screen),
-                    contentDescription = "Localized description"
+                    painter = painterResource(R.drawable.ic_back_top_app_bar),
+                    contentDescription = null,
                 )
             }
         }

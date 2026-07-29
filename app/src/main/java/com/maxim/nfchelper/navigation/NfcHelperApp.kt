@@ -26,7 +26,9 @@ fun NfcHelperApp() {
                 )
             }
             entry<Settings> {
-                SettingsScreen()
+                SettingsScreen(
+                    navigateBack = { backStack.removeLastOrNull() }
+                )
             }
         },
         transitionSpec = {
