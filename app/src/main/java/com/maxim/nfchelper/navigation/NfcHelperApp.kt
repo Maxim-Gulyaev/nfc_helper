@@ -1,5 +1,8 @@
 package com.maxim.nfchelper.navigation
 
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -15,6 +18,7 @@ fun NfcHelperApp() {
 
     NavDisplay(
         backStack = backStack,
+        onBack = { backStack.removeLastOrNull() },
         entryProvider = entryProvider {
             entry<Home> {
                 HomeScreen(
@@ -24,6 +28,14 @@ fun NfcHelperApp() {
             entry<Settings> {
                 SettingsScreen()
             }
-        }
+        },
+        transitionSpec = {
+            slideInHorizontally(initialOffsetX = { it }) togetherWith
+                    slideOutHorizontally(targetOffsetX = { -it })
+        },
+        popTransitionSpec = {
+            slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                    slideOutHorizontally(targetOffsetX = { it })
+        },
     )
 }
