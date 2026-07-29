@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">NFC Helper</string>
+    <string name="title_main_screen">NFC Helper</string>
 </resources>
