@@ -18,6 +18,7 @@ import com.maxim.nfchelper.R
 
 @Composable
 fun SettingsScreen(
+    viewModel: SettingsViewModel,
     navigateBack: () -> Unit,
 ) {
     Scaffold(

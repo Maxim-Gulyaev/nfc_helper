@@ -63,4 +63,7 @@ dependencies {
 
     // serialization
     implementation(libs.kotlinx.serialization.json)
+
+    // viewmodel
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 }

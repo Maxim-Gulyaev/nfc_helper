@@ -19,6 +19,7 @@ import com.maxim.nfchelper.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    viewModel: HomeViewModel,
     navigateSettings: () -> Unit,
 ) {
     Scaffold(
