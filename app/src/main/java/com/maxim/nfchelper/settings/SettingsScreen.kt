@@ -1,4 +1,4 @@
-package com.maxim.nfchelper.main_screen
+package com.maxim.nfchelper.settings
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -16,11 +16,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.maxim.nfchelper.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun SettingsScreen() {
     Scaffold(
-        topBar = { MainScreenAppBar() },
+        topBar = { SettingsScreenAppBar() },
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -31,7 +30,7 @@ fun MainScreen() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScreenAppBar(
+private fun SettingsScreenAppBar(
     modifier: Modifier = Modifier,
 ) {
     TopAppBar(
@@ -40,7 +39,7 @@ private fun MainScreenAppBar(
             titleContentColor = MaterialTheme.colorScheme.primary,
         ),
         title = {
-            Text(stringResource(R.string.title_main_screen))
+            Text(stringResource(R.string.title_settings_screen))
         },
         actions = {
             IconButton(onClick = { /* do something */ }) {
