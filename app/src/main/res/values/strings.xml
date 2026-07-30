@@ -2,4 +2,6 @@
     <string name="app_name">NFC Helper</string>
     <string name="title_main_screen">NFC Helper</string>
     <string name="title_settings_screen">Settings</string>
+    <string name="read_home_screen_pager_title">Read</string>
+    <string name="write_home_screen_pager_title">Write</string>
 </resources>
