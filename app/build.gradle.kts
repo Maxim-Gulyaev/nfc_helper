@@ -72,4 +72,7 @@ dependencies {
 
     // viewmodel
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+
+    // datastore
+    implementation(libs.androidx.datastore.preferences)
 }

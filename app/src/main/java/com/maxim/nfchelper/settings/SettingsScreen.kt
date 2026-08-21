@@ -1,33 +1,105 @@
 package com.maxim.nfchelper.settings
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.maxim.nfchelper.R
+import com.maxim.nfchelper.theme.ThemeMode
 
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
     navigateBack: () -> Unit,
 ) {
+    val uiState = viewModel.uiState.collectAsState()
     Scaffold(
         topBar = { SettingsScreenAppBar(navigateBack) },
     ) { innerPadding ->
         Box(
             modifier = Modifier
-                .padding(innerPadding)
-        ) { }
+                .fillMaxSize()
+                .padding(innerPadding),
+        ) {
+            ThemeSettingsContent(
+                selectedMode = uiState.value.themeMode,
+                onThemeModeSelected = viewModel::onThemeModeSelected,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ThemeSettingsContent(
+    selectedMode: ThemeMode,
+    onThemeModeSelected: (ThemeMode) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = stringResource(R.string.settings_theme_section_title),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(16.dp),
+        )
+        ThemeOptionRow(
+            titleRes = R.string.settings_theme_mode_system,
+            mode = ThemeMode.SYSTEM,
+            selectedMode = selectedMode,
+            onThemeModeSelected = onThemeModeSelected,
+        )
+        ThemeOptionRow(
+            titleRes = R.string.settings_theme_mode_light,
+            mode = ThemeMode.LIGHT,
+            selectedMode = selectedMode,
+            onThemeModeSelected = onThemeModeSelected,
+        )
+        ThemeOptionRow(
+            titleRes = R.string.settings_theme_mode_dark,
+            mode = ThemeMode.DARK,
+            selectedMode = selectedMode,
+            onThemeModeSelected = onThemeModeSelected,
+        )
+    }
+}
+
+@Composable
+private fun ThemeOptionRow(
+    titleRes: Int,
+    mode: ThemeMode,
+    selectedMode: ThemeMode,
+    onThemeModeSelected: (ThemeMode) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        RadioButton(
+            selected = selectedMode == mode,
+            onClick = { onThemeModeSelected(mode) },
+        )
+        Text(
+            text = stringResource(titleRes),
+            style = MaterialTheme.typography.bodyLarge,
+        )
     }
 }
 
