@@ -4,6 +4,7 @@
 /.idea/
 .DS_Store
 /build
+lint-checks/build/
 /captures
 .externalNativeBuild
 .cxx

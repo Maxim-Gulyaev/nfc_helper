@@ -23,5 +23,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "NFC Helper"
-include(":app")
+include(":app", ":lint-checks")
  
