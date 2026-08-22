@@ -1,47 +1,47 @@
-# Skill: Unit Testing (только local unit tests)
+# Skill: Unit Testing (local unit tests only)
 
-Правила написания и запуска **unit**-тестов (`app/src/test/`). Instrumentation-тесты
-(`app/src/androidTest/`) в скилл не входят.
+Rules for writing and running **unit** tests (`app/src/test/`). Instrumentation tests
+(`app/src/androidTest/`) are out of scope for this skill.
 
-## Запуск
+## Running
 
 ```bash
-./gradlew :app:testDebugUnitTest              # все unit-тесты
+./gradlew :app:testDebugUnitTest              # all unit tests
 ./gradlew :app:testDebugUnitTest --tests "com.maxim.nfchelper.home_screen.HomeViewModelTest"
 ```
 
-Отчёт: `app/build/reports/tests/testDebugUnitTest/index.html`.
+Report: `app/build/reports/tests/testDebugUnitTest/index.html`.
 
-## Текущая инфраструктура
+## Current infrastructure
 
-- Подключён **только JUnit4** (`testImplementation(libs.junit)`).
-- НЕ подключены: `kotlinx-coroutines-test`, `turbine`, `mockk`/`mockito`, Robolectric.
-- Существующие тесты: шаблонный `ExampleUnitTest.kt` (можно считать примером стиля JUnit4).
+- Only **JUnit4** is connected (`testImplementation(libs.junit)`).
+- NOT connected: `kotlinx-coroutines-test`, `turbine`, `mockk`/`mockito`, Robolectric.
+- Existing tests: the template `ExampleUnitTest.kt` (can be considered a JUnit4 style example).
 
-## Что тестируем
+## What we test
 
-| Код | Тестируем? | Как |
+| Code | Test it? | How |
 |---|---|---|
-| ViewModel / UiState-логика (чистые переходы состояния) | да | JUnit4, без Android-зависимостей |
-| Чистые функции/утилиты (парсинг, форматирование, валидация) | да | обычный JUnit4 |
-| Composable UI | нет (unit) | — вне скоупа; только сборка/ручная проверка |
-| Код с `Context`, NFC-адаптером, Android API | нет напрямую | выносить логику в чистый Kotlin и тестировать её |
+| ViewModel / UiState logic (pure state transitions) | yes | JUnit4, no Android dependencies |
+| Pure functions/utilities (parsing, formatting, validation) | yes | plain JUnit4 |
+| Composable UI | not with unit tests | out of scope; build/manual verification only |
+| Code with `Context`, NFC adapter, Android APIs | not directly | extract logic into pure Kotlin and test that |
 
-Если для теста нужны корутины/моки — **сначала согласовать с пользователем** добавление
-зависимостей (`kotlinx-coroutines-test`, `turbine`, `mockk`) в `app/build.gradle.kts`.
-До согласования писать тесты, которым хватает чистого JUnit4 (например, проверять
-`MutableStateFlow.value` напрямую без `viewModelScope`).
+If a test needs coroutines/mocks — **first agree with the user** on adding dependencies
+(`kotlinx-coroutines-test`, `turbine`, `mockk`) to `app/build.gradle.kts`.
+Until agreed, write tests that plain JUnit4 suffices for (e.g., check
+`MutableStateFlow.value` directly without `viewModelScope`).
 
-## Расположение и имена
+## Location and naming
 
-- Зеркалим пакет: класс `com.maxim.nfchelper.home_screen.HomeViewModel` →
+- Mirror the package: class `com.maxim.nfchelper.home_screen.HomeViewModel` →
   `app/src/test/java/com/maxim/nfchelper/home_screen/HomeViewModelTest.kt`.
-- Класс: `<ИмяТестируемогоКласса>Test`.
-- Методы: backtick-имена на английском, описывающие поведение —
+- Class: `<NameOfTestedClass>Test`.
+- Methods: backtick names in English describing the behavior —
   `` fun `ui state toggles when user taps write tab`() ``.
-- Один тест — одно поведение; assert на конкретное ожидание, не «не упало».
+- One test = one behavior; assert a concrete expectation, not just "didn't crash".
 
-## Шаблон
+## Template
 
 ```kotlin
 package com.maxim.nfchelper.home_screen
@@ -60,7 +60,7 @@ class HomeViewModelTest {
 }
 ```
 
-## Перед завершением задачи
+## Before finishing a task
 
-`./gradlew :app:testDebugUnitTest` должен быть зелёным; если тест добавлен — он выполняется
-в общем прогоне, отдельного шага не требуется.
+`./gradlew :app:testDebugUnitTest` must be green; if a test was added, it runs as part of
+the overall run — no separate step is required.

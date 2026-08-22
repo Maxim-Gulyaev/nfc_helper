@@ -1,20 +1,20 @@
 # Rules: Code Style (Kotlin / Compose)
 
-Правила стиля кода для NFC Helper. Применяются к любым изменениям кода.
+Code style rules for NFC Helper. They apply to any code changes.
 
 ## Kotlin
 
-- Официальные [Kotlin Coding Conventions](https://kotlinlang.org/docs/coding-conventions.html);
-  отступ — 4 пробела.
-- Имена: классы `PascalCase`, функции/переменные `camelCase`, константы `SCREAMING_SNAKE_CASE`.
-- Явные типы у public-функций; `val` вместо `var` везде, где возможно.
-- Не оставлять закомментированный код и `TODO` без задачи.
+- Official [Kotlin Coding Conventions](https://kotlinlang.org/docs/coding-conventions.html);
+  indentation is 4 spaces.
+- Naming: classes `PascalCase`, functions/variables `camelCase`, constants `SCREAMING_SNAKE_CASE`.
+- Explicit return types on public functions; `val` instead of `var` wherever possible.
+- Do not leave commented-out code or `TODO`s without a task.
 
 ## Compose
 
-- Composable-функции, описывающие UI-сущности — с заглавной буквы
-  (`HomeScreen`, `MainScreenAppBar`); служебные — по общим правилам Kotlin.
-- Экран = public-компонент + private внутренности:
+- Composable functions describing UI entities are capitalized
+  (`HomeScreen`, `MainScreenAppBar`); utility ones follow general Kotlin rules.
+- A screen = public component + private internals:
 
   ```kotlin
   @Composable
@@ -24,41 +24,41 @@
   private fun HomeScreenContent(uiState: HomeUiState, ...) { ... }
   ```
 
-- Public-экран принимает `viewModel` и навигационные лямбды; данные наружу из ViewModel —
-  только через `viewModel.uiState.collectAsState()`.
-- Переиспользуемые компоненты принимают `modifier: Modifier = Modifier` первым
-  (или последним) параметром.
-- `@Preview`-функции — для переиспользуемых компонентов; `@OptIn(ExperimentalMaterial3Api::class)`
-  ставится там, где использует M3-experimental API (`TopAppBar`, `PrimaryTabRow`).
-- Состояние UI-виджетов (pager, tabs) — через `rememberXxxState()`; доменное состояние в
-  Composable хранить запрещено (см. [architecture.md](../skills/architecture.md)).
+- The public screen takes a `viewModel` and navigation lambdas; data flows out of the ViewModel
+  only via `viewModel.uiState.collectAsState()`.
+- Reusable components take `modifier: Modifier = Modifier` as the first
+  (or last) parameter.
+- `@Preview` functions — for reusable components; add `@OptIn(ExperimentalMaterial3Api::class)`
+  where M3-experimental APIs are used (`TopAppBar`, `PrimaryTabRow`).
+- State of UI widgets (pager, tabs) — via `rememberXxxState()`; storing domain state in a
+  composable is forbidden (see [architecture.md](../skills/architecture.md)).
 
-## Комментарии
+## Comments
 
-- Код не загрязнять необязательными комментариями: комментарий — только когда поясняет
-  неочевидное **почему** (неочевидное решение, ограничение, ссылка на задачу).
-- Не описывать комментариями очевидные действия («вызываем функцию X», «обновляем состояние»)
-  — это читается из самого кода.
-- Вместо комментария предпочитать говорящее имя (`ThemeMode.fromName`, а не `parseString`).
+- Do not pollute the code with optional comments: a comment is only justified when it explains
+  a non-obvious **why** (a non-obvious decision, a limitation, a link to a task).
+- Do not describe obvious actions in comments ("calling function X", "updating state") —
+  that is readable from the code itself.
+- Prefer a descriptive name over a comment (`ThemeMode.fromName` instead of `parseString`).
 
-## Ресурсы
+## Resources
 
-- Строки — только `res/values/strings.xml` + `stringResource(R.string...)`.
-  Хардкод текста в UI — блокирующая ошибка ревью.
-- Имена ресурсов: `<тип>_<что>_<где>`:
-  - строки: `title_main_screen`, `read_home_screen_pager_title`;
+- Strings only via `res/values/strings.xml` + `stringResource(R.string...)`.
+  Hardcoded text in the UI is a blocking review error.
+- Resource naming: `<type>_<what>_<where>`:
+  - strings: `title_main_screen`, `read_home_screen_pager_title`;
   - drawable: `ic_settings_main_screen`, `ic_back_top_app_bar`.
 
-## Форматирование файлов
+## File formatting
 
-- Один top-level declaration на файл там, где это естественно
-  (`HomeScreen.kt`, `HomeViewModel.kt`); маленькие private-типы экрана
-  (как `TabItem` в `HomeScreen.kt`) могут жить в том же файле.
-- Imports без wildcard (`import androidx.compose.material3.Text`), неиспользуемые удалять.
+- One top-level declaration per file where it feels natural
+  (`HomeScreen.kt`, `HomeViewModel.kt`); small screen-private types
+  (like `TabItem` in `HomeScreen.kt`) may live in the same file.
+- Imports without wildcards (`import androidx.compose.material3.Text`); remove unused ones.
 
-## ViewModel / состояние
+## ViewModel / state
 
-- Паттерн проекта — explicit backing field (в проекте включён `-Xexplicit-backing-fields`):
+- The project pattern is an explicit backing field (the project enables `-Xexplicit-backing-fields`):
 
   ```kotlin
   class HomeViewModel : ViewModel() {
@@ -67,5 +67,5 @@
   }
   ```
 
-- UiState — один immutable data class на экран; не плодить много отдельных `MutableStateFlow`
-  на одно состояние.
+- UiState is one immutable data class per screen; do not spawn multiple separate `MutableStateFlow`s
+  for one state.

@@ -1,57 +1,57 @@
 # Skill: Code Review
 
-Ревью кода в этом репозитории: PR, diff, отдельный файл или набор изменений.
+Code review in this repository: a PR, a diff, a single file, or a set of changes.
 
-## Порядок работы
+## Process
 
-1. Определи скоуп: какие файлы/функции затронуты (`git diff`, `git diff main...`).
-2. Прочитай затронутые файлы целиком — не суди по diff в отрыве от контекста.
-3. Проверь по чеклисту ниже.
-4. Оформи результат в формате «Формат вывода».
+1. Determine the scope: which files/functions are affected (`git diff`, `git diff main...`).
+2. Read the affected files in full — do not judge from the diff alone, out of context.
+3. Check against the checklist below.
+4. Format the result according to "Output format".
 
-## Чеклист
+## Checklist
 
-### Архитектура (подробности в [architecture.md](architecture.md))
-- [ ] Код лежит в правильном фича-пакете (`home_screen`, `settings`, ...), а не свален в общий пакет
-- [ ] Экран не тянет зависимости мимо ViewModel; навигационные лямбды пробрасываются сверху
-- [ ] Новый экран зарегистрирован: запись в `Screen` (sealed class) + `entry<...>` в `NfcHelperApp`
+### Architecture (details in [architecture.md](architecture.md))
+- [ ] The code lives in the correct feature package (`home_screen`, `settings`, ...), not dumped into a common package
+- [ ] A screen does not pull dependencies past its ViewModel; navigation lambdas are passed down from above
+- [ ] New screen is registered: an entry in `Screen` (sealed class) + `entry<...>` in `NfcHelperApp`
 
 ### Compose / UI
-- [ ] Строки только через `stringResource(R.string...)`; хардкод текста в UI — ошибка
-  (исторический пример: `ReadTabContent.kt` с `"I am a read content"`)
-- [ ] Composable-функции stateless: состояние из `viewModel.uiState.collectAsState()`,
-  события — лямбды вверх; никаких `remember { mutableStateOf }` для доменного состояния
-- [ ] Public-компонент экрана принимает `viewModel` + навигационные лямбды;
-  внутренние `Content`/`AppBar` — private и получают готовые данные
-- [ ] `Modifier` передаётся параметром с дефолтом у переиспользуемых компонентов
-- [ ] Preview-функции не сломаны, `@OptIn(ExperimentalMaterial3Api::class)` стоит там, где нужно
+- [ ] Strings only via `stringResource(R.string...)`; hardcoded text in the UI is an error
+  (historical example: `ReadTabContent.kt` with `"I am a read content"`)
+- [ ] Composable functions are stateless: state comes from `viewModel.uiState.collectAsState()`,
+  events go up as lambdas; no `remember { mutableStateOf }` for domain state
+- [ ] The public screen component takes a `viewModel` + navigation lambdas;
+  internal `Content`/`AppBar` are private and receive ready data
+- [ ] `Modifier` is passed as a parameter with a default for reusable components
+- [ ] Preview functions are not broken; `@OptIn(ExperimentalMaterial3Api::class)` is present where needed
 
-### ViewModel / состояние
-- [ ] Состояние — `StateFlow<XxxUiState>` с explicit backing field
+### ViewModel / state
+- [ ] State is a `StateFlow<XxxUiState>` with an explicit backing field
       (`val uiState: StateFlow<HomeUiState> field = MutableStateFlow(...)`),
-      единый immutable `UiState` data class, а не россыпь `MutableStateFlow`
-- [ ] Бизнес-логика не протекла в Composable
+      a single immutable `UiState` data class rather than a scatter of `MutableStateFlow`s
+- [ ] Business logic has not leaked into composables
 
-### Общее
-- [ ] Нет закомментированного мёртвого кода, `TODO` без задачи, отладочных логов
-- [ ] Имена по Kotlin conventions; нет `data class ... ()` с лишними скобками (стиль `Screens.kt`)
-- [ ] Ресурсы (строки, drawable) названы по шаблону `<что>_<где>` (`ic_settings_main_screen`,
+### General
+- [ ] No commented-out dead code, `TODO`s without tasks, or debug logs
+- [ ] Names follow Kotlin conventions; no `data class ... ()` with extra parentheses (`Screens.kt` style)
+- [ ] Resources (strings, drawables) are named per the `<what>_<where>` template (`ic_settings_main_screen`,
       `title_settings_screen`)
 
-## Формат вывода
+## Output format
 
 ```markdown
 ## Review: <scope>
 
-### Критично (блокирует мерж)
-- `файл:строка` — проблема → как исправить
+### Critical (blocks merge)
+- `file:line` — problem → how to fix
 
-### Стоит улучшить
-- `файл:строка` — замечание → предложение
+### Worth improving
+- `file:line` — remark → suggestion
 
-### Ок
-- Что сделано хорошо (1–3 пункта)
+### Good
+- What was done well (1–3 points)
 ```
 
-Серьёзность завышать не нужно: стилистика — не блокер, нарушение архитектуры и строковые
-хардкоды — блокер.
+Do not inflate severity: style issues are not blockers; architecture violations and string
+hardcodes are blockers.

@@ -1,36 +1,36 @@
 # Skill: Bug Fix
 
-Исправление бага в NFC Helper. Цель — минимальный точечный фикс + доказательство, что баг
-исправлен и ничего не сломано.
+Fixing a bug in NFC Helper. The goal is a minimal targeted fix + proof that the bug is fixed
+and nothing is broken.
 
-## Порядок работы
+## Process
 
-1. **Формализуй баг.** Сформулируй: ожидаемое поведение / фактическое / условия
-   воспроизведения. Если данных мало — задай вопросы пользователю до начала правок.
-2. **Локализуй.** Найди ответственный код через поиск по проекту. Типовые места:
-   - UI-баги → `home_screen/`, `settings/`, `ui/theme/`
-   - Навигация → `navigation/NfcHelperApp.kt`, `navigation/Screens.kt`
-   - Состояние → соответствующий `XxxViewModel`
-3. **Найди корневую причину.** Не чини симптом: если падает рендер, разберись, какие данные
-   приходят в `UiState`, а не просто оберни в `if`.
-4. **Фикс.** Минимальный diff, без попутного рефакторинга. Если по пути нашёл несвязанные
-   проблемы — сообщи о них отдельно, не тащи в фикс.
-5. **Регрессионная проверка:**
-   - `./gradlew :app:assembleDebug` — сборка зелёная;
-   - если баг покрывается unit-тестом — добавь тест по [testing-unit.md](testing-unit.md)
-     и запусти `./gradlew :app:testDebugUnitTest`;
-   - если баг UI/навигации и юнит-тест невозможен — опиши, как проверить руками.
-6. **Отчёт пользователю:** причина → что изменил (diff) → как проверил.
+1. **Formalize the bug.** State: expected behavior / actual behavior / reproduction steps.
+   If there is not enough information — ask the user before making changes.
+2. **Localize.** Find the responsible code via project search. Typical places:
+   - UI bugs → `home_screen/`, `settings/`, `ui/theme/`
+   - Navigation → `navigation/NfcHelperApp.kt`, `navigation/Screens.kt`
+   - State → the corresponding `XxxViewModel`
+3. **Find the root cause.** Do not fix the symptom: if rendering crashes, figure out what data
+   arrives in `UiState` instead of just wrapping it in an `if`.
+4. **The fix.** Minimal diff, no drive-by refactoring. If you find unrelated problems along
+   the way — report them separately, do not drag them into the fix.
+5. **Regression check:**
+   - `./gradlew :app:assembleDebug` — build is green;
+   - if the bug can be covered by a unit test — add a test following [testing-unit.md](testing-unit.md)
+     and run `./gradlew :app:testDebugUnitTest`;
+   - if the bug is UI/navigation and a unit test is impossible — describe how to verify manually.
+6. **Report to the user:** cause → what you changed (diff) → how you verified it.
 
-## Ограничения
+## Constraints
 
-- Не менять публичные контракты (`Screen`, сигнатуры экранов) без явного согласования —
-  это затрагивает навигацию.
-- Не «улучшать» код вокруг фикса.
-- Строки, добавляемые в UI в ходе фикса, — только через `strings.xml`.
+- Do not change public contracts (`Screen`, screen signatures) without explicit agreement —
+  this affects navigation.
+- Do not "improve" the code around the fix.
+- Strings added to the UI during a fix go only through `strings.xml`.
 
-## Красные флаги (стоп и спроси пользователя)
+## Red flags (stop and ask the user)
 
-- Фикс требует нового разрешения/манифест-изменения.
-- Фикс требует изменения зависимостей в `app/build.gradle.kts`.
-- Причина бага — в сторонней библиотеке (Navigation 3 и т.п.), нужен workaround.
+- The fix requires a new permission/manifest change.
+- The fix requires changing dependencies in `app/build.gradle.kts`.
+- The bug's cause is in a third-party library (Navigation 3, etc.) and a workaround is needed.

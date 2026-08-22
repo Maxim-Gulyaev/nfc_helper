@@ -1,16 +1,16 @@
 # Skill: New Screen
 
-Добавление нового экрана по шаблону проекта. Архитектурный контекст —
+Adding a new screen following the project template. Architectural context —
 [architecture.md](architecture.md).
 
-## Чеклист
+## Checklist
 
-### 1. Пакет фичи
+### 1. Feature package
 
-Создай пакет `com.maxim.nfchelper.<feature>_screen/` (или `<feature>/`, если это не экран
-с табами, а отдельная фича) по образцу `home_screen/` / `settings/`.
+Create the package `com.maxim.nfchelper.<feature>_screen/` (or `<feature>/` if it is not a
+tabbed screen but a separate feature) modeled after `home_screen/` / `settings/`.
 
-### 2. Три файла фичи
+### 2. Three feature files
 
 **`XxxScreen.kt`:**
 
@@ -18,7 +18,7 @@
 @Composable
 fun XxxScreen(
     viewModel: XxxViewModel,
-    // навигационные лямбды по необходимости
+    // navigation lambdas as needed
 ) {
     val uiState = viewModel.uiState.collectAsState()
     XxxScreenContent(uiState = uiState.value /*, ... */)
@@ -27,14 +27,14 @@ fun XxxScreen(
 @Composable
 private fun XxxScreenContent(uiState: XxxUiState /*, ... */) {
     Scaffold(topBar = { XxxScreenAppBar(/* ... */) }) { innerPadding ->
-        // контент
+        // content
     }
 }
 ```
 
-- AppBar по образцу `MainScreenAppBar` / `SettingsScreenAppBar`
+- The AppBar follows the pattern of `MainScreenAppBar` / `SettingsScreenAppBar`
   (`TopAppBarDefaults.topAppBarColors(primaryContainer / primary)`).
-- Для M3 API не забудь `@OptIn(ExperimentalMaterial3Api::class)`.
+- For M3 APIs, do not forget `@OptIn(ExperimentalMaterial3Api::class)`.
 
 **`XxxViewModel.kt`:**
 
@@ -45,24 +45,24 @@ class XxxViewModel : ViewModel() {
 }
 ```
 
-**`XxxUiState`** (в файле ViewModel): immutable data class с дефолтами.
+**`XxxUiState`** (in the ViewModel file): immutable data class with defaults.
 
-### 3. Ресурсы
+### 3. Resources
 
-- Заголовок и все строки → `strings.xml`, префикс `title_<screen>_screen` для тайтла.
-- Иконки → `res/drawable/ic_*.xml`.
-- Никакого хардкода текста в composables.
+- The title and all strings → `strings.xml`, prefix `title_<screen>_screen` for the title.
+- Icons → `res/drawable/ic_*.xml`.
+- No hardcoded text in composables.
 
-### 4. Навигация
+### 4. Navigation
 
-1. В `navigation/Screens.kt` добавь:
+1. In `navigation/Screens.kt` add:
 
    ```kotlin
    @Serializable
    data object Xxx : Screen()
    ```
 
-2. В `NfcHelperApp.kt` зарегистрируй entry:
+2. Register the entry in `NfcHelperApp.kt`:
 
    ```kotlin
    entry<Xxx> {
@@ -74,16 +74,16 @@ class XxxViewModel : ViewModel() {
    }
    ```
 
-3. Переход из родительского экрана: пробрось лямбду `{ backStack.add(Screen.Xxx) }`
-   сверху вниз (родительский Screen → Content → кнопка).
+3. Navigation from the parent screen: pass down the lambda `{ backStack.add(Screen.Xxx) }`
+   (parent Screen → Content → button).
 
-### 5. Проверка
+### 5. Verification
 
-Прогони [build-and-verify.md](build-and-verify.md). Если у экрана есть чистая логика в
-ViewModel — добавь тесты по [testing-unit.md](testing-unit.md).
+Run [build-and-verify.md](build-and-verify.md). If the screen has pure logic in its
+ViewModel — add tests following [testing-unit.md](testing-unit.md).
 
-## Антипаттерны (не делать)
+## Anti-patterns (do not)
 
-- Создавать экран без ViewModel «потому что пока пусто» — шаблон одинаковый для всех.
-- Пробрасывать `NavBackStack`/навигацию вглубь фичи — только лямбды.
-- Регистрировать route строкой — маршруты только через sealed class `Screen`.
+- Creating a screen without a ViewModel "because it is empty for now" — the template is the same for all.
+- Passing `NavBackStack`/navigation deep into a feature — only lambdas.
+- Registering routes as strings — routes go only through the sealed class `Screen`.

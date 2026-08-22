@@ -1,48 +1,48 @@
 # Skill: Build & Verify
 
-Сборка проекта и проверка изменений. Выполняется перед завершением любой задачи
-и после любых правок кода.
+Building the project and verifying changes. Performed before finishing any task
+and after any code edits.
 
-## Шаг 1: Сборка
+## Step 1: Build
 
 ```bash
 ./gradlew :app:assembleDebug
 ```
 
-- Успех → переходи к шагу 2.
-- Ошибка компиляции → читай первый error (последующие часто — следствие), исправляй,
-  повторяй. Типовые причины в этом проекте:
-  - забыт `@OptIn(ExperimentalMaterial3Api::class)` для M3 API;
-  - несуществующий `R.string...` / `R.drawable...` (опечатка или строка не добавлена
-    в `strings.xml`);
-  - explicit backing field: у `val uiState: StateFlow<...>` должно быть `field = ...`.
+- Success → proceed to step 2.
+- Compilation error → read the first error (subsequent ones are often consequences), fix it,
+  repeat. Typical causes in this project:
+  - a forgotten `@OptIn(ExperimentalMaterial3Api::class)` for an M3 API;
+  - a non-existent `R.string...` / `R.drawable...` (typo or the string was not added
+    to `strings.xml`);
+  - explicit backing field: `val uiState: StateFlow<...>` must have `field = ...`.
 
-## Шаг 2: Unit-тесты
+## Step 2: Unit tests
 
 ```bash
 ./gradlew :app:testDebugUnitTest
 ```
 
-- Зелёные → готово.
-- Падение → открой отчёт `app/build/reports/tests/testDebugUnitTest/index.html`,
-  разбери упавший assert; если падение вызвано твоим изменением — фикс, если тест
-  устарел относительно новой логики — согласуй изменение теста с пользователем.
+- Green → done.
+- Failure → open the report at `app/build/reports/tests/testDebugUnitTest/index.html`,
+  analyze the failed assertion; if the failure is caused by your change — fix it; if the test
+  is outdated relative to the new logic — agree on changing the test with the user.
 
-## Шаг 3: Быстрая статическая самопроверка
+## Step 3: Quick static self-check
 
-Пройдись по diff'у с чеклистом из [review-code.md](review-code.md) (кратко):
+Go through the diff with the checklist from [review-code.md](review-code.md) (briefly):
 
-- [ ] нет хардкода строк в UI;
-- [ ] состояние через ViewModel/StateFlow, Composable stateless;
-- [ ] навигация только через Navigation 3;
-- [ ] неиспользуемые импорты удалены.
+- [ ] no hardcoded strings in the UI;
+- [ ] state via ViewModel/StateFlow, composables stateless;
+- [ ] navigation only via Navigation 3;
+- [ ] unused imports removed.
 
-## Полезные варианты запуска
+## Useful launch variants
 
 ```bash
-./gradlew :app:assembleDebug --console=plain -q      # тихий вывод
+./gradlew :app:assembleDebug --console=plain -q      # quiet output
 ./gradlew :app:testDebugUnitTest --tests "com.maxim.nfchelper.home_screen.HomeViewModelTest"
-./gradlew :app:clean :app:assembleDebug              # если подозреваешь stale-артефакты
+./gradlew :app:clean :app:assembleDebug              # if you suspect stale artifacts
 ```
 
-Критерий завершения: обе команды прошли без ошибок, замечаний чеклиста нет.
+Completion criterion: both commands pass without errors and there are no checklist remarks.
