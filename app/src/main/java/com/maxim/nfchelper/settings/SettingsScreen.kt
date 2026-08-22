@@ -1,7 +1,8 @@
 package com.maxim.nfchelper.settings
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +19,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -35,9 +37,10 @@ fun SettingsScreen(
     Scaffold(
         topBar = { SettingsScreenAppBar(navigateBack) },
     ) { innerPadding ->
-        Box(
+        Column (
             modifier = Modifier
                 .fillMaxSize()
+                .padding(16.dp)
                 .padding(innerPadding),
         ) {
             ThemeSettingsContent(
@@ -54,11 +57,12 @@ private fun ThemeSettingsContent(
     onThemeModeSelected: (ThemeMode) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
         Text(
             text = stringResource(R.string.title_theme_settings_screen),
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(16.dp),
         )
         ThemeOptionRow(
             titleRes = R.string.title_theme_mode_system,
@@ -93,7 +97,11 @@ private fun ThemeOptionRow(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onThemeModeSelected(mode) },
+            .padding(start = 8.dp)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+            ) { onThemeModeSelected(mode) }
     ) {
         RadioButton(
             selected = selectedMode == mode,
