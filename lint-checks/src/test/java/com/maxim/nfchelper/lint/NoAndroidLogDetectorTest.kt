@@ -7,6 +7,16 @@ import org.junit.Test
 
 class NoAndroidLogDetectorTest {
 
+    private val suppressLintStub = java(
+        """
+        package android.annotation;
+
+        public @interface SuppressLint {
+            String[] value();
+        }
+        """
+    ).indented()
+
     private val logStub = java(
         """
         package android.util;
@@ -167,6 +177,92 @@ class NoAndroidLogDetectorTest {
     }
 
     @Test
+    fun `method level suppress lint suppresses the issue`() {
+        lint().files(
+            logStub,
+            suppressLintStub,
+            kotlin(
+                """
+                package test.pkg
+
+                import android.annotation.SuppressLint
+                import android.util.Log
+
+                class Example {
+                    @SuppressLint("DiscouragedAndroidLog")
+                    fun doWork() {
+                        Log.d("Example", "working")
+                    }
+                }
+                """
+            ).indented(),
+        )
+            .allowMissingSdk()
+            .issues(NoAndroidLogDetector.ISSUE_DISCOURAGED_ANDROID_LOG)
+            .run()
+            .expectClean()
+    }
+
+    @Test
+    fun `method level suppression does not hide other calls`() {
+        lint().files(
+            logStub,
+            suppressLintStub,
+            kotlin(
+                """
+                package test.pkg
+
+                import android.annotation.SuppressLint
+                import android.util.Log
+
+                class Example {
+                    @SuppressLint("DiscouragedAndroidLog")
+                    fun suppressedWork() {
+                        Log.d("Example", "suppressed")
+                    }
+
+                    fun doWork() {
+                        Log.e("Example", "reported")
+                    }
+                }
+                """
+            ).indented(),
+        )
+            .allowMissingSdk()
+            .issues(NoAndroidLogDetector.ISSUE_DISCOURAGED_ANDROID_LOG)
+            .run()
+            .expectErrorCount(1)
+            .expectContains("src/test/pkg/Example.kt:13: Error: Do not use android.util.Log")
+    }
+
+    @Test
+    fun `class level suppress lint suppresses the issue`() {
+        lint().files(
+            logStub,
+            suppressLintStub,
+            kotlin(
+                """
+                package test.pkg
+
+                import android.annotation.SuppressLint
+                import android.util.Log
+
+                @SuppressLint("DiscouragedAndroidLog")
+                class Example {
+                    fun doWork() {
+                        Log.d("Example", "working")
+                    }
+                }
+                """
+            ).indented(),
+        )
+            .allowMissingSdk()
+            .issues(NoAndroidLogDetector.ISSUE_DISCOURAGED_ANDROID_LOG)
+            .run()
+            .expectClean()
+    }
+
+    @Test
     fun `java source with log call is reported`() {
         lint().files(
             logStub,
@@ -192,37 +288,6 @@ class NoAndroidLogDetectorTest {
                 src/test/pkg/Example.java:7: Error: Do not use android.util.Log; remove this call or suppress with @SuppressLint("DiscouragedAndroidLog") if logging is really needed [DiscouragedAndroidLog]
                         Log.d("Example", "working");
                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                1 errors, 0 warnings
-                """
-            )
-    }
-
-    @Test
-    fun `issue registry contains the issue`() {
-        lint().files(
-            logStub,
-            kotlin(
-                """
-                package test.pkg
-
-                import android.util.Log
-
-                class Example {
-                    fun doWork() {
-                        Log.i("Example", "info")
-                    }
-                }
-                """
-            ).indented(),
-        )
-            .allowMissingSdk()
-            .issues(NoAndroidLogDetector.ISSUE_DISCOURAGED_ANDROID_LOG)
-            .run()
-            .expect(
-                """
-                src/test/pkg/Example.kt:7: Error: Do not use android.util.Log; remove this call or suppress with @SuppressLint("DiscouragedAndroidLog") if logging is really needed [DiscouragedAndroidLog]
-                        Log.i("Example", "info")
-                        ~~~~~~~~~~~~~~~~~~~~~~~~
                 1 errors, 0 warnings
                 """
             )

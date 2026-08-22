@@ -40,5 +40,5 @@ android-lint-tests = { group = "com.android.tools.lint", name = "lint-tests", ve
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+android-lint = { id = "com.android.lint", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-

@@ -4,6 +4,7 @@ plugins {
     // No version: the Kotlin Gradle plugin is already on this build's classpath,
     // so requesting it again with a version fails plugin resolution.
     kotlin("jvm")
+    alias(libs.plugins.android.lint)
 }
 
 kotlin {
