@@ -1,23 +1,29 @@
 package com.maxim.nfchelper.settings
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.maxim.nfchelper.theme.ThemeMode
 import com.maxim.nfchelper.theme.ThemeRepository
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class SettingsViewModel(application: Application) : AndroidViewModel(application) {
+class SettingsViewModel : ViewModel() {
 
-    val uiState: StateFlow<SettingsUiState>
-        field = MutableStateFlow(SettingsUiState(ThemeRepository.themeMode.value))
+    val uiState: StateFlow<SettingsUiState> =
+        ThemeRepository.themeMode
+            .map { mode -> SettingsUiState(themeMode = mode) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Lazily,
+                initialValue = SettingsUiState(ThemeRepository.themeMode.value),
+            )
 
     fun onThemeModeSelected(mode: ThemeMode) {
-        uiState.value = uiState.value.copy(themeMode = mode)
         viewModelScope.launch {
-            ThemeRepository.setThemeMode(getApplication(), mode)
+            ThemeRepository.setThemeMode(mode)
         }
     }
 }

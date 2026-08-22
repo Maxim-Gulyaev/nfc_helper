@@ -1,5 +1,6 @@
 package com.maxim.nfchelper.settings
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,24 +56,24 @@ private fun ThemeSettingsContent(
 ) {
     Column(modifier = modifier) {
         Text(
-            text = stringResource(R.string.settings_theme_section_title),
+            text = stringResource(R.string.title_theme_settings_screen),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(16.dp),
         )
         ThemeOptionRow(
-            titleRes = R.string.settings_theme_mode_system,
+            titleRes = R.string.title_theme_mode_system,
             mode = ThemeMode.SYSTEM,
             selectedMode = selectedMode,
             onThemeModeSelected = onThemeModeSelected,
         )
         ThemeOptionRow(
-            titleRes = R.string.settings_theme_mode_light,
+            titleRes = R.string.title_theme_mode_light,
             mode = ThemeMode.LIGHT,
             selectedMode = selectedMode,
             onThemeModeSelected = onThemeModeSelected,
         )
         ThemeOptionRow(
-            titleRes = R.string.settings_theme_mode_dark,
+            titleRes = R.string.title_theme_mode_dark,
             mode = ThemeMode.DARK,
             selectedMode = selectedMode,
             onThemeModeSelected = onThemeModeSelected,
@@ -90,11 +91,13 @@ private fun ThemeOptionRow(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onThemeModeSelected(mode) },
     ) {
         RadioButton(
             selected = selectedMode == mode,
-            onClick = { onThemeModeSelected(mode) },
+            onClick = null,
         )
         Text(
             text = stringResource(titleRes),

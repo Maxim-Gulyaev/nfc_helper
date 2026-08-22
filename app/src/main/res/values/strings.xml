@@ -5,8 +5,8 @@
     <string name="read_home_screen_pager_title">Read</string>
     <string name="write_home_screen_pager_title">Write</string>
 
-    <string name="settings_theme_section_title">Theme</string>
-    <string name="settings_theme_mode_system">System</string>
-    <string name="settings_theme_mode_light">Light</string>
-    <string name="settings_theme_mode_dark">Dark</string>
+    <string name="title_theme_settings_screen">Theme</string>
+    <string name="title_theme_mode_system">System</string>
+    <string name="title_theme_mode_light">Light</string>
+    <string name="title_theme_mode_dark">Dark</string>
 </resources>

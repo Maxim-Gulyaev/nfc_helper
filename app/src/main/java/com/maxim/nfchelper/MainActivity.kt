@@ -1,6 +1,8 @@
 package com.maxim.nfchelper
 
 import android.os.Bundle
+import android.view.View
+import android.view.ViewTreeObserver
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -16,6 +18,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         ThemeRepository.init(this)
+        holdFirstFrameUntilThemeLoaded()
         setContent {
             val themeMode = ThemeRepository.themeMode.collectAsState()
             NFCHelperTheme(
@@ -24,5 +27,21 @@ class MainActivity : ComponentActivity() {
                 NfcHelperApp()
             }
         }
+    }
+
+    private fun holdFirstFrameUntilThemeLoaded() {
+        val content: View = findViewById(android.R.id.content)
+        content.viewTreeObserver.addOnPreDrawListener(
+            object : ViewTreeObserver.OnPreDrawListener {
+                override fun onPreDraw(): Boolean {
+                    return if (ThemeRepository.isLoaded.value) {
+                        content.viewTreeObserver.removeOnPreDrawListener(this)
+                        true
+                    } else {
+                        false
+                    }
+                }
+            },
+        )
     }
 }
