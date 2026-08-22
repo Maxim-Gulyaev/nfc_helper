@@ -43,6 +43,30 @@ com.maxim.nfchelper/
 5. Новая фича = отдельный пакет по образцу существующих (`home_screen`, `settings`).
 6. Перед завершением задачи собирать модуль и запускать unit-тесты (см. команды выше).
 
+## Mandatory Android Post-Implementation Review
+
+For every implementation task in an Android project, perform a mandatory self-review before declaring the task complete.
+
+After implementing the requested changes:
+
+1. Inspect the complete diff and verify that the implementation matches the task requirements and existing project conventions.
+2. Review the changed code and related execution flow for:
+   - incorrect logic, missed requirements, and regressions;
+   - edge cases, nullability, error handling, and state consistency;
+   - coroutine cancellation, threading, lifecycle, and resource leaks;
+   - Jetpack Compose state handling and avoidable recompositions;
+   - navigation, dependency injection, module boundaries, and Gradle configuration where relevant;
+   - compatibility with all affected build variants and product flavors.
+3. Run the most relevant available verification: targeted unit tests, compilation, lint, or an affected build variant. Prefer targeted checks first.
+4. Fix every issue found during the review that is within the task scope.
+5. Re-run the relevant review and verification after making fixes. Repeat until no actionable issues remain or further progress is genuinely blocked.
+
+Self-review is an implementation step, not a report-only step: make the necessary corrections instead of merely listing them.
+
+Do not introduce unrelated refactoring or revert pre-existing user changes.
+
+Do not declare the task complete while relevant checks are failing. If a check cannot be run or an issue cannot be resolved, explicitly report the blocker, the unverified area, and the remaining risk.
+
 ## Правила и скиллы
 
 Правила стиля и процесса лежат в `.agent/rules/`, сценарии работы — в `.agent/skills/`.
